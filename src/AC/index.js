@@ -1,3 +1,16 @@
-/**
- * Created by Юра on 05.10.2017.
- */
+import {
+    GET_PRODUCT
+} from '../constants'
+
+export function getProduct() {
+    return {
+        type: GET_PRODUCT,
+        callAPI: '/api/products'
+    }
+}
+
+
+
+
+
+
