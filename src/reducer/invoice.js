@@ -1,7 +1,4 @@
-import {
-    GET_INVOICE
-} from '../constants'
-
+import {GET_INVOICE} from '../constants'
 
 export default (state = [], action) => {
     const {type, invoices} = action;

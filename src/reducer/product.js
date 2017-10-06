@@ -1,7 +1,4 @@
-import {
-    GET_PRODUCT
-} from '../constants'
-
+import {GET_PRODUCT} from '../constants'
 
 export default (state = [], action) => {
     const {type, products} = action;

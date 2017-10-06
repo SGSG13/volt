@@ -178,7 +178,6 @@ class CreateInvoice extends Component {
             modal: false,
         })
     };
-
     
     renderTable = () => {
         return(
