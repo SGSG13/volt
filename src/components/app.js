@@ -3,6 +3,7 @@ import Header from './header'
 import Products from './products'
 import Customers from './customers'
 import Invoices from './invoices'
+import CreateInvoice from './createInvoice'
 import {Router, Route} from 'react-router-dom'
 
 import  createBrowserHistory from 'history/createBrowserHistory';
@@ -20,7 +21,8 @@ class App extends Component {
                         <Route path="/products" component = {Products}/>
                         <Route path="/" component = {Invoices} exact/>
                         <Route path="/customers" component = {Customers}/>
-                        <Route path="/invoices" component = {Invoices}/>
+                        <Route path="/invoices" component = {Invoices} exact/>
+                        <Route path="/invoices/create" component = {CreateInvoice}/>
                     </div>
                 </Router>
             </div>

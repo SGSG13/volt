@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import {LinkContainer} from 'react-router-bootstrap';
-import Nav from 'react-bootstrap/lib/Nav';
-import Navbar from 'react-bootstrap/lib/Navbar';
-import NavItem from 'react-bootstrap/lib/NavItem';
+import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
+import {LinkContainer} from 'react-router-bootstrap'
+import Nav from 'react-bootstrap/lib/Nav'
+import Navbar from 'react-bootstrap/lib/Navbar'
+import NavItem from 'react-bootstrap/lib/NavItem'
 
 class Header extends Component{
     render() {

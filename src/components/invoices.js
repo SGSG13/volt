@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import {Link} from 'react-router-dom'
 import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -8,7 +9,7 @@ import Table from 'react-bootstrap/lib/Table'
 import Modal from 'react-bootstrap/lib/Modal'
 import Alert from 'react-bootstrap/lib/Alert'
 import {connect} from 'react-redux'
-import {getInvoice} from '../AC'
+import {getInvoice, getCustomer} from '../AC'
 import {deleteItemApi} from '../api'
 
 
@@ -25,11 +26,13 @@ class Products extends Component {
     static propTypes = {
         // from connect
         getInvoice: PropTypes.func.isRequired,
-        invoices: PropTypes.array
+        invoices: PropTypes.array,
+        customers: PropTypes.array
     };
 
     componentDidMount() {
         this.props.getInvoice();
+        this.props.getCustomer();
         document.title = 'Invoice List';
     }
 
@@ -47,7 +50,6 @@ class Products extends Component {
         })
     };
 
-
     deleteInvoice = () => {
         const {invoiceId} = this.state;
 
@@ -55,12 +57,22 @@ class Products extends Component {
         this.hideModals();
     };
 
+    getCustomerName = (id) => {
+         let customer =  this.props.customers.filter(customer => {
+            return customer.id === id
+        });
+        
+        if(customer.length < 1) return;
+
+        return customer[0].name
+    };
+
     renderBody () {
         return(
             this.props.invoices.map(invoice => (
                 <tr key={invoice.id}>
                     <td>{invoice.id}</td>
-                    <td>{invoice.customer_id}</td>
+                    <td>{this.getCustomerName(invoice.customer_id)}</td>
                     <td>{invoice.discount}</td>
                     <td>{invoice.total}</td>
                     <td>
@@ -86,7 +98,7 @@ class Products extends Component {
                     <Row className="show-grid">
                         <Col md={12}>
                             <h1 style={{display: 'inline-block', marginRight: 20}}>Invoice List</h1>
-                            <Button onClick={this.showCreateModal}>Create</Button>
+                            <Link to="/invoices/create"><Button>Create</Button></Link>
                             <Table responsive>
                                 <thead>
                                 <tr>
@@ -128,7 +140,8 @@ class Products extends Component {
 
 export default connect((state) => {
     return {
-        invoices: state.invoice
+        invoices: state.invoice,
+        customers: state.customer
     }
-}, {getInvoice})(Products);
+}, {getInvoice, getCustomer})(Products);
 
