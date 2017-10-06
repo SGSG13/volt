@@ -1,6 +1,7 @@
 import {
     GET_PRODUCT,
-    GET_CUSTOMER
+    GET_CUSTOMER,
+    GET_INVOICE
 } from '../constants'
 
 export function getProduct() {
@@ -16,6 +17,14 @@ export function getCustomer() {
         callAPI: '/api/customers'
     }
 }
+
+export function getInvoice () {
+    return {
+        type: GET_INVOICE,
+        callAPI: '/api/invoices'
+    }
+}
+
 
 
 

@@ -16,6 +16,9 @@ class Header extends Component{
                         </Navbar.Brand>
                     </Navbar.Header>
                     <Nav>
+                        <LinkContainer to="/invoices">
+                            <NavItem>Invoices</NavItem>
+                        </LinkContainer>
                         <LinkContainer to="/products">
                             <NavItem>Products</NavItem>
                         </LinkContainer>
