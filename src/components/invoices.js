@@ -52,9 +52,9 @@ class Products extends Component {
 
     deleteInvoice = () => {
         const {invoiceId} = this.state;
-
-        deleteItemApi(`/api/products/${invoiceId}`, this.props.getInvoice);
-        this.hideModals();
+        deleteItemApi(`/api/invoices/${invoiceId}`, this.props.getInvoice);
+        
+        this.hideModals()
     };
 
     getCustomerName = (id) => {
@@ -144,4 +144,8 @@ export default connect((state) => {
         customers: state.customer
     }
 }, {getInvoice, getCustomer})(Products);
+
+
+
+
 

@@ -9,11 +9,11 @@ import Table from 'react-bootstrap/lib/Table'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Modal from 'react-bootstrap/lib/Modal'
+import Alert from 'react-bootstrap/lib/Alert'
 import Select from 'react-select'
 import {getProduct, getCustomer} from '../AC'
-import {
-    createItemApi
-} from '../api'
+import {createItemApi} from '../api'
 
 class CreateInvoice extends Component {
     
@@ -85,10 +85,8 @@ class CreateInvoice extends Component {
             let product =  this.props.products.filter(product => {
                 return product.id === val.value
             });
-            
 
             if(product.length < 1) return;
-            
             this.setState({
                 productId: val.value,
                 productPrice: product[0].price,
@@ -96,8 +94,7 @@ class CreateInvoice extends Component {
             })
         }
     };
-    
-    
+
     addProduct = () => {
         if(this.state.productId === '') return;
 
@@ -111,46 +108,26 @@ class CreateInvoice extends Component {
         if(this.state.products.some(product => product.id === newProduct.id ? true : false)){
             const newArr = this.state.products.map(product => product.id === newProduct.id ? {...product, qty: Number(product.qty) + 1} : product);
             this.totalPrice(newArr);
-            
-            // let productsQty = newArr.map(product => ({[product.id]: product.qty}));
-            //
-            // this.setState({
-            //     productsQty
-            // });
-
             this.setState({
                 products: newArr
             });
-            
         } else {
             const concatArr = this.state.products.concat(newProduct);
             this.totalPrice(concatArr);
-
-            // let productsQty = concatArr.map(product => ({[product.id]: product.qty}));
-            //
-            // this.setState({
-            //     productsQty
-            // });
-           
             this.setState({
                 products: concatArr
             });
-            
         }
-
         this.setState({
             productId: '',
             productPrice: '',
             productName: ''
         });
-        
     };
-    
-    
+
     totalPrice = (arr) => {
         arr.forEach(product => {
             let total = Number(product.price) * Number(product.qty);
-            
             this.setState({
                 total: this.state.total + total
             });
@@ -172,17 +149,14 @@ class CreateInvoice extends Component {
     createInvoice = () => {
         this.validationInput();
         if(this.state.customerId === '') return;
-
-        console.log('eeeee');
-        
         const invoice = {
             customer_id: this.state.customerId,
             discount: this.state.discount,
-            total: this.state.total
+            total: Math.round((this.state.total - (this.state.total / 100 * Number(this.state.discount))) * 100) / 100
         };
-
         createItemApi('/api/invoices', this.resetInvoice, invoice)
     };
+    
     
     resetInvoice = () => {
         this.setState({
@@ -194,7 +168,14 @@ class CreateInvoice extends Component {
             products: [],
             validCustomer: true,
             validProduct: true,
-            total: 0
+            total: 0,
+            modal: true
+        })
+    };
+
+    hideModals = () => {
+        this.setState({
+            modal: false,
         })
     };
 
@@ -214,7 +195,8 @@ class CreateInvoice extends Component {
                     {this.renderBody()}
                     </tbody>
                 </Table>
-                <h3>Total: {this.state.total - (this.state.total / 100 * Number(this.state.discount))}</h3>
+                <h3>Total: {Math.round((this.state.total - (this.state.total / 100 * Number(this.state.discount))) * 100) / 100}</h3>
+                
                 <Button onClick={this.createInvoice}>Create</Button>
             </div>
         )
@@ -290,6 +272,22 @@ class CreateInvoice extends Component {
                         {this.state.products.length > 0 ? this.renderTable() : ''}
                      </Col>
                 </Row>
+                
+                <div className="static-modal">
+                    <Modal show={this.state.modal}>
+                        <Modal.Header>
+                            <Modal.Title>Invoice</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Alert bsStyle="success" >
+                                <p>Invoice created!</p>
+                            </Alert>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button onClick={this.hideModals}>Ok</Button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>
             </Grid>    
         );
     }
@@ -299,7 +297,8 @@ class CreateInvoice extends Component {
 export default connect((state) => {
     return {
         products: state.product,
-        customers: state.customer
+        customers: state.customer,
+        invoices: state.invoice
     }
 }, {getProduct, getCustomer})(CreateInvoice);
 
