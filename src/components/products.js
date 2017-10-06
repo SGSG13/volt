@@ -29,7 +29,9 @@ class Products extends Component {
             modalDelete: false,
             productId: '',
             productName: '',
-            productPrice: ''
+            productPrice: '',
+            validName: true,
+            validPrice: true
         }
     }
 
@@ -90,15 +92,21 @@ class Products extends Component {
         }
     };
 
-    getValidationName = () => {
-        const length = this.state.productName.length;
-        return length > 0 ? 'success': 'error'
+    // getValidationName = () => {
+    //     const length = this.state.productName.length;
+    //     return length > 0 ? 'success': 'error'
+    // };
+    //
+    // getValidationPrice = () => {
+    //     const length = this.state.productName.length;
+    //     return length > 0 ? 'success': 'error'
+    // };
+    
+    validationInput = () => {
+        this.state.productName === '' ? this.setState({validName : false}) : this.setState({validName : true});
+        this.state.productPrice === '' ? this.setState({validPrice : false}) : this.setState({validPrice : true})
     };
-
-    getValidationPrice = () => {
-        const length = this.state.productName.length;
-        return length > 0 ? 'success': 'error'
-    };
+    
 
     showCreateModal = () => {
         this.setState({
@@ -132,7 +140,8 @@ class Products extends Component {
     };
     
     createProduct = () => {
-       if(this.state.productName === '' && this.state.productPrice === '') return;
+        this.validationInput();
+       if(this.state.productName === '' || this.state.productPrice === '') return;
        
         const newProduct = {
             name: this.state.productName,
@@ -144,7 +153,8 @@ class Products extends Component {
     };
 
     editProduct = () => {
-        if(this.state.productName === '' && this.state.productPrice === '') return;
+        this.validationInput();
+        if(this.state.productName === '' || this.state.productPrice === '') return;
         
         const {productId} = this.state;
         const editProduct = {
@@ -177,11 +187,11 @@ class Products extends Component {
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Price</th>
-                                    <th></th>
+                                    <th> </th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.renderBody()}
+                                {this.props.products.length > 0 ?this.renderBody() : <tr><td><h3 className="text-center">no products</h3></td></tr>}
                                 </tbody>
                             </Table>
                         </Col>
@@ -195,7 +205,7 @@ class Products extends Component {
                         </Modal.Header>
                         <Modal.Body>
                             <form>
-                                <FormGroup validationState={this.getValidationName()}>
+                                <FormGroup className={!this.state.validName ? 'has-error': ''}>
                                     <ControlLabel>Name</ControlLabel>
                                     <FormControl
                                         name="productName"
@@ -206,7 +216,7 @@ class Products extends Component {
                                     />
                                     
                                 </FormGroup>
-                                <FormGroup validationState={this.getValidationPrice()}>
+                                <FormGroup className={!this.state.validPrice ? 'has-error': ''}>
                                     <ControlLabel>Price</ControlLabel>
                                     <FormControl
                                         name="productPrice"
@@ -232,7 +242,7 @@ class Products extends Component {
                         </Modal.Header>
                         <Modal.Body>
                             <form>
-                                <FormGroup validationState={this.getValidationName()}>
+                                <FormGroup className={!this.state.validName ? 'has-error': ''}>
                                     <ControlLabel>Name</ControlLabel>
                                     <FormControl
                                         name="productName"
@@ -243,7 +253,7 @@ class Products extends Component {
                                     />
 
                                 </FormGroup>
-                                <FormGroup validationState={this.getValidationPrice()}>
+                                <FormGroup  className={!this.state.validPrice ? 'has-error': ''}>
                                     <ControlLabel>Price</ControlLabel>
                                     <FormControl
                                         name="productPrice"
@@ -273,7 +283,7 @@ class Products extends Component {
                             </Alert>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={this.deleteProduct} bsStyle="primary">Delete</Button>
+                            <Button onClick={this.deleteProduct} className="btn btn-danger" >Delete</Button>
                             <Button onClick={this.hideModals}>Cancel</Button>
                         </Modal.Footer>
                     </Modal>
