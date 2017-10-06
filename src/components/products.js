@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-
+import PropTypes from 'prop-types'
 import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -13,9 +13,9 @@ import Alert from 'react-bootstrap/lib/Alert'
 import {connect} from 'react-redux'
 import {getProduct} from '../AC'
 import {
-    createProductApi, 
-    editProductApi, 
-    deleteProductApi
+    createItemApi, 
+    editItemApi, 
+    deleteItemApi
 } from '../api'
 
 
@@ -35,45 +35,18 @@ class Products extends Component {
         }
     }
 
+    static propTypes = {
+        // from connect
+        getProduct: PropTypes.func.isRequired,
+        products: PropTypes.array
+    };
+
     componentDidMount() {
         this.props.getProduct();
         document.title = 'Product List';
     }
     
-    renderBody () {
-        return(
-            this.props.products.map(product => (
-                <tr key={product.id}>
-                    <td>{product.id}</td>
-                    <td>{product.name}</td>
-                    <td>{product.price}</td>
-                    <td>
-                        <Button 
-                            onClick={this.showEditModal.bind(this, {
-                                productId : product.id,
-                                productName:product.name,
-                                productPrice: product.price
-                            })} 
-                            className="btn btn-default" style={{marginRight: 20}}
-                        >
-                            Edit
-                        </Button>
-                        <Button
-                            onClick={this.showDeleteModal.bind(this, {
-                                productId : product.id,
-                                productName:product.name
-
-                            })}
-                            className="btn btn-danger"
-                        >
-                            Delete
-                        </Button>
-                    </td>
-                </tr>
-            ))
-        )
-    };
-
+    
     handleChangeInput = (ev) => {
         const {value, name} = ev.target;
        
@@ -92,16 +65,6 @@ class Products extends Component {
         }
     };
 
-    // getValidationName = () => {
-    //     const length = this.state.productName.length;
-    //     return length > 0 ? 'success': 'error'
-    // };
-    //
-    // getValidationPrice = () => {
-    //     const length = this.state.productName.length;
-    //     return length > 0 ? 'success': 'error'
-    // };
-    
     validationInput = () => {
         this.state.productName === '' ? this.setState({validName : false}) : this.setState({validName : true});
         this.state.productPrice === '' ? this.setState({validPrice : false}) : this.setState({validPrice : true})
@@ -135,7 +98,9 @@ class Products extends Component {
             modalDelete: false,
             productName: '',
             productPrice: '',
-            productId: ''
+            productId: '',
+            validName: true,
+            validPrice: true
         })
     };
     
@@ -147,9 +112,9 @@ class Products extends Component {
             name: this.state.productName,
             price: this.state.productPrice
         };
-        createProductApi('/api/products', this.props.getProduct, newProduct);
+      
+        createItemApi('/api/products', this.props.getProduct, newProduct);
       this.hideModals();
-       
     };
 
     editProduct = () => {
@@ -161,16 +126,50 @@ class Products extends Component {
             name: this.state.productName,
             price: this.state.productPrice
         };
-        editProductApi(`/api/products/${productId}`, this.props.getProduct, editProduct);
+        
+        editItemApi(`/api/products/${productId}`, this.props.getProduct, editProduct);
         this.hideModals();
-
     };
     
     deleteProduct = () => {
         const {productId} = this.state;
 
-        deleteProductApi(`/api/products/${productId}`, this.props.getProduct);
+        deleteItemApi(`/api/products/${productId}`, this.props.getProduct);
         this.hideModals();
+    };
+
+    renderBody () {
+        return(
+            this.props.products.map(product => (
+                <tr key={product.id}>
+                    <td>{product.id}</td>
+                    <td>{product.name}</td>
+                    <td>{product.price}</td>
+                    <td>
+                        <Button
+                            onClick={this.showEditModal.bind(this, {
+                                productId : product.id,
+                                productName:product.name,
+                                productPrice: product.price
+                            })}
+                            className="btn btn-default" style={{marginRight: 20}}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            onClick={this.showDeleteModal.bind(this, {
+                                productId : product.id,
+                                productName:product.name
+
+                            })}
+                            className="btn btn-danger"
+                        >
+                            Delete
+                        </Button>
+                    </td>
+                </tr>
+            ))
+        )
     };
     
     render() {
@@ -214,7 +213,6 @@ class Products extends Component {
                                         placeholder="Enter name"
                                         onChange={this.handleChangeInput}
                                     />
-                                    
                                 </FormGroup>
                                 <FormGroup className={!this.state.validPrice ? 'has-error': ''}>
                                     <ControlLabel>Price</ControlLabel>
@@ -251,7 +249,6 @@ class Products extends Component {
                                         placeholder="Enter name"
                                         onChange={this.handleChangeInput}
                                     />
-
                                 </FormGroup>
                                 <FormGroup  className={!this.state.validPrice ? 'has-error': ''}>
                                     <ControlLabel>Price</ControlLabel>
@@ -289,7 +286,6 @@ class Products extends Component {
                     </Modal>
                 </div>
             </div>
-            
         );
     }
 }

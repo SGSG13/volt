@@ -1,5 +1,6 @@
 import {
-    GET_PRODUCT
+    GET_PRODUCT,
+    GET_CUSTOMER
 } from '../constants'
 
 export function getProduct() {
@@ -8,6 +9,14 @@ export function getProduct() {
         callAPI: '/api/products'
     }
 }
+
+export function getCustomer() {
+    return {
+        type: GET_CUSTOMER,
+        callAPI: '/api/customers'
+    }
+}
+
 
 
 

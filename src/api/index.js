@@ -1,4 +1,4 @@
-export function createProductApi(url, success, product) {
+export function createItemApi(url, success, item) {
     fetch(url, {
         method: "post",
         headers: {
@@ -7,15 +7,14 @@ export function createProductApi(url, success, product) {
         },
 
         body: JSON.stringify({
-            name: product.name,
-            price: product.price
+            ...item
         })
     })
         .then(res => success())
         .catch(error => console.log(error));
 }
 
-export function editProductApi(url, success, product) {
+export function editItemApi(url, success, item) {
     fetch(url, {
         method: "put",
         headers: {
@@ -24,15 +23,14 @@ export function editProductApi(url, success, product) {
         },
 
         body: JSON.stringify({
-            name: product.name,
-            price: product.price
+            ...item
         })
     })
         .then(res => success())
         .catch(error => console.log(error));
 }
 
-export function deleteProductApi(url, success) {
+export function deleteItemApi(url, success) {
     fetch(url, {
         method: "delete",
         headers: {
